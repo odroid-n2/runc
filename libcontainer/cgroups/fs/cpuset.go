@@ -29,12 +29,12 @@ func (s *CpusetGroup) Apply(path string, d *cgroupData) error {
 
 func (s *CpusetGroup) Set(path string, cgroup *configs.Cgroup) error {
 	if cgroup.Resources.CpusetCpus != "" {
-		if err := fscommon.WriteFile(path, "cpuset.cpus", cgroup.Resources.CpusetCpus); err != nil {
+		if err := fscommon.WriteFile(path, "cpus", cgroup.Resources.CpusetCpus); err != nil {
 			return err
 		}
 	}
 	if cgroup.Resources.CpusetMems != "" {
-		if err := fscommon.WriteFile(path, "cpuset.mems", cgroup.Resources.CpusetMems); err != nil {
+		if err := fscommon.WriteFile(path, "mems", cgroup.Resources.CpusetMems); err != nil {
 			return err
 		}
 	}
@@ -104,10 +104,10 @@ func (s *CpusetGroup) ApplyDir(dir string, cgroup *configs.Cgroup, pid int) erro
 }
 
 func (s *CpusetGroup) getSubsystemSettings(parent string) (cpus []byte, mems []byte, err error) {
-	if cpus, err = ioutil.ReadFile(filepath.Join(parent, "cpuset.cpus")); err != nil {
+	if cpus, err = ioutil.ReadFile(filepath.Join(parent, "cpus")); err != nil {
 		return
 	}
-	if mems, err = ioutil.ReadFile(filepath.Join(parent, "cpuset.mems")); err != nil {
+	if mems, err = ioutil.ReadFile(filepath.Join(parent, "mems")); err != nil {
 		return
 	}
 	return cpus, mems, nil
@@ -151,12 +151,12 @@ func (s *CpusetGroup) copyIfNeeded(current, parent string) error {
 	}
 
 	if s.isEmpty(currentCpus) {
-		if err := fscommon.WriteFile(current, "cpuset.cpus", string(parentCpus)); err != nil {
+		if err := fscommon.WriteFile(current, "cpus", string(parentCpus)); err != nil {
 			return err
 		}
 	}
 	if s.isEmpty(currentMems) {
-		if err := fscommon.WriteFile(current, "cpuset.mems", string(parentMems)); err != nil {
+		if err := fscommon.WriteFile(current, "mems", string(parentMems)); err != nil {
 			return err
 		}
 	}
